@@ -2,10 +2,21 @@
 <html>
   <head>
     <title><%= title %></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <% if (typeof polls !== 'undefined' && polls.length > 0) {%>
+      <div class="list-group">
+      <%for (var i = 0; i < polls.length; i++) {%>
+        <a href="<%= '/polls/' + polls[i].uid %>" class="list-group-item">
+          <%= polls[i].text %> <span class="badge"><%= polls[i].choices.length %> choices</span>
+        </a>
+      <%}%>
+      </div>
+    <% } %>
+
   </body>
 </html>

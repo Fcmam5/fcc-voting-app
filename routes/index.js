@@ -1,10 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var PollModel = require('../models/PollModel.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  PollModel.find({}, function(err, Polls){
+    var pollObjects = {}
+    if (err || !Polls ) {
+      pollObjects = {};
+    } else {
+      pollObjects = Polls;
+    }
+    res.render('index', { title: 'FreeCodeCamp Voting application', 'polls': pollObjects});
+  })
 });
 
 /* GET Login page. */
