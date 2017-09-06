@@ -4,6 +4,8 @@ This is my `Voting application` for [FreeCodeCamp backend challenges](https://ww
 
 The project was built upon my [Express boilerplate](https://github.com/Fcmam5/mini-express-boilerplate), and it uses [billboard.js](https://naver.github.io/billboard.js/) for drawing charts.
 
+Application was deployed on [Heroku](http://heroku.com/) and the DB is on [mLab](http://mlab.com/), please feel free to try it [https://fcc-voting-app-fcmam5.herokuapp.com](https://fcc-voting-app-fcmam5.herokuapp.com)
+
 ## User stories
 * **User Story:** As an authenticated user, I can keep my polls and come back later to access them.
 * **User Story:** As an authenticated user, I can share my polls with my friends.
