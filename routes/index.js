@@ -12,7 +12,11 @@ router.get('/', function(req, res, next) {
     } else {
       pollObjects = Polls;
     }
-    res.render('index', { title: 'FreeCodeCamp Voting application', 'polls': pollObjects});
+    res.render('index', {
+                          'title': 'FreeCodeCamp Voting application',
+                         'polls': pollObjects,
+                         'user': req.user
+                       });
   })
 });
 

@@ -7,7 +7,14 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <p>Welcome to <%= title %>.
+      <% if (typeof user === 'undefined') {%>
+        Please <a href='/login'>login</a> or <a href='/register'>register</a>
+      <%} else {%>
+     Go to your <a href='/users/profile'>profile</a>, or manage <a href='/polls/all'>your polls</a>
+      <%}%>
+      .
+    </p>
     <% if (typeof polls !== 'undefined' && polls.length > 0) {%>
       <div class="list-group">
       <%for (var i = 0; i < polls.length; i++) {%>
