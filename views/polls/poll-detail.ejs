@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+      <div class="row">
+      <div class="col-sm-8 col-sm-offset-2">
+      <% if (typeof poll !== 'undefined') {%>
+        <p class="h3"><%= poll.text %></p>
+        <form action="<%= '/polls/' + poll.uid %>" method="post">
+          <input type="hidden" name="_csrf" value="<%=csrftoken%>" />
+          <div id="choices">
+            <div class="radio">
+              <label>
+                <input type="radio" name="votes" value="<%= 0 %>" checked>
+                <%= poll.choices[0].choiceText %>
+              </label>
+            </div>
+            <% for (var i = 1; i < poll.choices.length; i++) {%>
+            <div class="radio">
+              <label>
+                <input type="radio" name="votes" value="<%= i %>">
+                <%= poll.choices[i].choiceText %>
+              </label>
+            </div>
+        <%}%>
+        </div>
+        <div class="inline-group">
+          <label>
+            <input type="radio" id="new-option" name="votes">
+            other
+            <input type="text" name="pollOption">
+          </label>
+        </div>
+        <button type="submit" class="btn btn-warning btn-block">Vote</button>
+        </form>
+        <div class="clearfix"></div>
+        <hr>
+        <div class="text-center panel">
+          <div class="panel-body">
+            <p class='h3'>Share this poll</p>
+            <p><span id="facebook"></span> <span id="twitter"></span></p>
+            <p>Link</p>
+            <input type="text" id="poll-link" readonly="true" class='form-control' style="cursor:copy;text-align:center;">
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var timer;
+    var _this;
+    var newOption = $('#new-option');
+    $('input[name="pollOption"]')
+      .keyup(function(){
+        _this = $(this);
+        clearTimeout(timer)
+        timer = setTimeout(function(){
+          newOption.attr('value', "__new_option__" + _this.val());
+        },500);
+      })
+      .on('focus', function(){
+        newOption.prop("checked", true);
+      });
+      // TODO: Work on "If the input is empty and the radio is slected"
+
+      /**
+      * Generate SHARE buttons
+      */
+      var currentURL = window.location;
+      $("#twitter").html("<a href='https://twitter.com/intent/tweet?url="+ currentURL +"&text=" + document.title + "' target='_blank'>\
+                          <img src='https://png.icons8.com/twitter/color/50' title='Facebook' width='50' height='50'>\
+                          </a>");
+
+      $("#facebook").html("<a href='https://www.facebook.com/sharer/sharer.php?u="+ currentURL + "' target='_blank'>\
+                          <img src='https://png.icons8.com/facebook/color/50' title='Facebook' width='50' height='50'>\
+                          </a>");
+      $('#poll-link').val(currentURL).on('focus', function(){
+        $(this).select();
+      })
+  });
+</script>
+</body>
+</html>

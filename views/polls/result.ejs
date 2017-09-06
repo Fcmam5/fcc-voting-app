@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <link rel="stylesheet" href="http://naver.github.io/billboard.js/release/latest/dist/billboard.min.css">
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+      <div class="row">
+      <div class="col-sm-8 col-sm-offset-2">
+      <%#  if (typeof poll !== 'undefined') {#%>
+      <div class="row">
+        <div class="col-md-6">
+          <p class="h3"><%= poll.text %></p>
+          <ul>
+            <% for (var i = 0; i < poll.choices.length; i++) {%>
+              <li><%= poll.choices[i].choiceText %> (<%= poll.choices[i].votes %> votes)</li>
+              <%}%>
+            </ul>
+          </div>
+        <div class="col-md-6">
+          <div id="chart"></div>
+        </div>
+      </div>
+        <hr>
+        <div class="text-center panel">
+          <div class="panel-body">
+            <p class='h3'>Share these results</p>
+            <p><span id="facebook"></span> <span id="twitter"></span></p>
+            <p>Link</p>
+            <input type="text" id="poll-link" readonly="true" class='form-control' style="cursor:copy;text-align:center;">
+          </div>
+        </div>
+        <%# } %>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://naver.github.io/billboard.js/release/latest/dist/billboard.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var timer;
+    var _this;
+    var uid = <%= poll.uid %>;
+    var newOption = $('#new-option');
+    $('input[name="pollOption"]')
+      .keyup(function(){
+        _this = $(this);
+        clearTimeout(timer)
+        timer = setTimeout(function(){
+          newOption.attr('value', "__new_option__" + _this.val());
+        },500);
+      })
+      .on('focus', function(){
+        newOption.prop("checked", true);
+      });
+      // TODO: Work on "If the input is empty and the radio is slected"
+
+      /**
+      * Generate SHARE buttons
+      */
+      var currentURL = window.location;
+      $("#twitter").html("<a href='https://twitter.com/intent/tweet?url="+ currentURL +"&text=" + document.title + "' target='_blank'>\
+                          <img src='https://png.icons8.com/twitter/color/50' title='Facebook' width='50' height='50'>\
+                          </a>");
+
+      $("#facebook").html("<a href='https://www.facebook.com/sharer/sharer.php?u="+ currentURL + "' target='_blank'>\
+                          <img src='https://png.icons8.com/facebook/color/50' title='Facebook' width='50' height='50'>\
+                          </a>");
+      $('#poll-link').val(currentURL).on('focus', function(){
+        $(this).select();
+      });
+
+      /**
+      * Billboard.js setup for drawing charts
+      * TODO Create an API & consume
+      */
+
+      $.get('/polls/get/' + uid, function(data){
+        if (data) {
+          var votesArrayToPlot = data.choices.map(function(vote){
+            return [vote.choiceText, vote.votes]
+          });
+
+          console.log(votesArrayToPlot);
+          var chart = bb.generate({
+              bindto: "#chart",
+              "data": {
+                "columns": votesArrayToPlot,
+                "type": "pie"
+              },
+              
+          });
+        }
+      });
+
+      // call some API
+      // chart.load( '...' );
+  });
+</script>
+</body>
+</html>
